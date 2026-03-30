@@ -203,12 +203,19 @@ def parse_rss_xml(raw):
 # ── Display ───────────────────────────────────────────────────────────────────
 
 def display(meta, items, limit=None, show_desc=True, width=80):
-    if meta.get('title'):
-        print(f'\n{BOLD}{CYAN}{meta["title"]}{RESET}')
+    feed_title = meta.get('title', '')
+    feed_desc  = meta.get('desc', '')
+    if _has_rtl(feed_title):
+        feed_title = _apply_bidi(feed_title)
+    if _has_rtl(feed_desc):
+        feed_desc = _apply_bidi(feed_desc)
+
+    if feed_title:
+        print(f'\n{BOLD}{CYAN}{feed_title}{RESET}')
     if meta.get('link'):
         print(f'{DIM}{meta["link"]}{RESET}')
-    if meta.get('desc'):
-        print(f'{DIM}{meta["desc"]}{RESET}')
+    if feed_desc:
+        print(f'{DIM}{feed_desc}{RESET}')
     print()
 
     shown = items[:limit] if limit else items
